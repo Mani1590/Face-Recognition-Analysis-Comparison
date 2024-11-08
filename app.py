@@ -2,96 +2,83 @@ import streamlit as st
 import cv2
 import numpy as np
 from PIL import Image
-from modules.initial_analysis import ImageAnalyzer
-from modules.recognition_techniques import (
-    EigenfaceRecognition,
-    LBPRecognition,
-    DeepLearningRecognition
-)
-from modules.visualization import ResultsVisualizer
 
-# Page configuration
+# Set page config first, before any other Streamlit commands
 st.set_page_config(
     page_title="Face Recognition Analysis",
     page_icon="👤",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-def main():
-    st.title("Face Recognition Analysis in Low-Quality Blurred Images")
-    st.write("Upload an image to analyze using three different face recognition techniques")
+def load_css():
+    with open('C:\\Users\\91983\\OneDrive\\Desktop\\Ongoing Projects\\Face Recognition Project (DIP)\\assets\\css\\styles.css') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-    # File uploader
-    uploaded_file = st.file_uploader("Choose an image...", type=['jpg', 'jpeg', 'png'])
+def main():
+    # Load custom CSS
+    load_css()
+    
+    # Custom header with styling
+    st.markdown("""
+        <div class="header">
+            <h1>Face Recognition Analysis</h1>
+            <p>Analyze face recognition techniques in low-quality blurred images</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Upload section
+    st.markdown('<div class="upload-section">', unsafe_allow_html=True)
+    uploaded_file = st.file_uploader(
+        "Upload your image for analysis",
+        type=['jpg', 'jpeg', 'png']
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if uploaded_file is not None:
-        # Load and display original image
+        # Display image and info
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
-
-        # Initial Analysis
-        with st.spinner("Performing initial analysis..."):
-            analyzer = ImageAnalyzer()
-            initial_results = analyzer.analyze_image(image)
-
-        # Display initial analysis results
-        st.subheader("Initial Analysis Results")
-        col1, col2, col3, col4 = st.columns(4)
+        
+        col1, col2 = st.columns([2, 1])
+        
         with col1:
-            st.metric("Blur Level", f"{initial_results['blur_level']:.2f}")
+            st.image(image, caption="Uploaded Image", use_column_width=True)
+        
         with col2:
-            st.metric("Image Quality", f"{initial_results['quality_score']:.2f}")
-        with col3:
-            st.metric("Resolution", f"{initial_results['resolution']}")
-        with col4:
-            st.metric("Noise Level", f"{initial_results['noise_level']:.2f}")
-
-        # Create tabs for different techniques
-        tab1, tab2, tab3 = st.tabs([
-            "Eigenface Analysis",
-            "LBP Analysis",
-            "Deep Learning Analysis"
-        ])
-
-        # Perform analysis with each technique
-        with tab1:
-            eigenface = EigenfaceRecognition()
-            eigenface_results = eigenface.analyze(image)
-            visualizer = ResultsVisualizer()
-            visualizer.display_eigenface_results(eigenface_results)
-
-        with tab2:
-            lbp = LBPRecognition()
-            lbp_results = lbp.analyze(image)
-            visualizer.display_lbp_results(lbp_results)
-
-        with tab3:
-            deep_learning = DeepLearningRecognition()
-            deep_learning_results = deep_learning.analyze(image)
-            visualizer.display_deep_learning_results(deep_learning_results)
-
-        # Comparison Section
-        st.subheader("Technique Comparison")
-        visualizer.display_comparison(
-            eigenface_results,
-            lbp_results,
-            deep_learning_results
-        )
-
-        # Export Results
-        if st.button("Generate Report"):
-            report = generate_report(
-                initial_results,
-                eigenface_results,
-                lbp_results,
-                deep_learning_results
-            )
-            st.download_button(
-                label="Download Report",
-                data=report,
-                file_name="face_recognition_analysis_report.pdf",
-                mime="application/pdf"
-            )
+            st.markdown("""
+                <div class="metric-card">
+                    <h3>Image Information</h3>
+                """, unsafe_allow_html=True)
+            st.write(f"Size: {image.size}")
+            st.write(f"Format: {image.format}")
+            st.write(f"Mode: {image.mode}")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Analysis button
+        if st.button("Start Analysis", key="analyze_btn"):
+            with st.spinner("Analyzing image..."):
+                st.markdown('<div class="analysis-section">', unsafe_allow_html=True)
+                
+                # Create tabs for different analyses
+                tab1, tab2, tab3 = st.tabs([
+                    "Eigenface Analysis",
+                    "LBP Analysis",
+                    "Deep Learning Analysis"
+                ])
+                
+                with tab1:
+                    st.header("Eigenface Analysis")
+                    st.write("Analysis results will appear here")
+                
+                with tab2:
+                    st.header("LBP Analysis")
+                    st.write("Analysis results will appear here")
+                
+                with tab3:
+                    st.header("Deep Learning Analysis")
+                    st.write("Analysis results will appear here")
+                
+                st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
