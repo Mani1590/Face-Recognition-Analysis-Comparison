@@ -2,10 +2,10 @@ Here's the step-by-step plan in simple English for analyzing face recognition te
 Step 1: Image Input and Initial Analysis
     User uploads an image through the Streamlit interface
     System performs initial checks:
-    Image quality assessment
-    Blur level detection
-    Resolution check
-    Noise level measurement
+        Image quality assessment
+        Blur level detection
+        Resolution check
+        Noise level measurement
 Step 2: Implementation of Three Face Recognition Techniques
     Technique 1: Eigenface Analysis
         Analyze how well eigenface method works with blurred image
